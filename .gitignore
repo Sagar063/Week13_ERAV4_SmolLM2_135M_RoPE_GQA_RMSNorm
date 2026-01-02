@@ -4,10 +4,10 @@ __pycache__/
 .venv/
 venv/
 
-# Training outputs (your train.py writes here)
-# out/
-# runs/
-**/checkpoints/
+# Training outputs
+out_smollm2_scratch/**
+!out_smollm2_scratch/train.log
+tmp_sanity/
 
 # OS/editor
 .DS_Store
