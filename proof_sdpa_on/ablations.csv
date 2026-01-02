@@ -1,0 +1,2 @@
+timestamp,variant,steps,seq_len,batch_size,grad_accum,seed,device,autocast,amp_dtype,compile,attention_impl,tie_word_embeddings,params,warmup_ignored_steps,avg_tok_s_steady,peak_mem_bytes
+2026-01-03 03:44:44,sdpa_on,140,256,1,4,1337,cuda,True,bf16,False,sdpa,True,134515008,100,1807.1449818240528,2891000320

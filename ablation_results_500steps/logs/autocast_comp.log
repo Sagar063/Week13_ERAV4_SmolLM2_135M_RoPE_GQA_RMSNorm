@@ -1,0 +1,19 @@
+2026-01-03 03:36:02 | ===============================================
+2026-01-03 03:36:02 | RUNNING VARIANT: autocast_comp | max_steps=500
+2026-01-03 03:36:02 | START variant=autocast_comp
+2026-01-03 03:36:02 | spec={"autocast": true, "compile": true, "attention_impl": "manual", "tie_word_embeddings": true}
+2026-01-03 03:36:02 | PyTorch=2.7.0+cu126
+2026-01-03 03:36:02 | CUDA=12.6 | GPU=NVIDIA GeForce RTX 4060 Ti
+2026-01-03 03:36:02 | SDPA backends enabled: {"flash": "unknown", "mem_efficient": "unknown", "math": "unknown"}
+2026-01-03 03:36:31 | step    1/500 | lr 5.882e-06 | loss 11.3186 | tok/s 36.4
+2026-01-03 03:37:33 | step   50/500 | lr 2.941e-04 | loss 8.7248 | tok/s 799.4
+2026-01-03 03:38:36 | step  100/500 | lr 2.922e-04 | loss 6.2933 | tok/s 812.7
+2026-01-03 03:39:40 | step  150/500 | lr 2.690e-04 | loss 6.0227 | tok/s 805.1
+2026-01-03 03:40:20 | step  200/500 | lr 2.333e-04 | loss 6.3796 | tok/s 1293.4
+2026-01-03 03:41:21 | step  250/500 | lr 1.894e-04 | loss 6.2599 | tok/s 837.5
+2026-01-03 03:42:12 | step  300/500 | lr 1.425e-04 | loss 5.9482 | tok/s 993.7
+2026-01-03 03:42:41 | step  350/500 | lr 9.832e-05 | loss 5.7549 | tok/s 1761.8
+2026-01-03 03:43:08 | step  400/500 | lr 6.219e-05 | loss 6.1615 | tok/s 1886.9
+2026-01-03 03:43:45 | step  450/500 | lr 3.847e-05 | loss 6.1836 | tok/s 1394.4
+2026-01-03 03:44:34 | step  500/500 | lr 3.000e-05 | loss 5.9183 | tok/s 1051.1
+2026-01-03 03:44:34 | END variant=autocast_comp

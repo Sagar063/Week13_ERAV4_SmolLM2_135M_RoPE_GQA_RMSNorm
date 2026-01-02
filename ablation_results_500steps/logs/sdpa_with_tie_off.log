@@ -1,0 +1,19 @@
+2026-01-03 03:55:40 | ===============================================
+2026-01-03 03:55:40 | RUNNING VARIANT: sdpa_with_tie_off | max_steps=500
+2026-01-03 03:55:40 | START variant=sdpa_with_tie_off
+2026-01-03 03:55:40 | spec={"autocast": true, "compile": false, "attention_impl": "sdpa", "tie_word_embeddings": false}
+2026-01-03 03:55:40 | PyTorch=2.7.0+cu126
+2026-01-03 03:55:40 | CUDA=12.6 | GPU=NVIDIA GeForce RTX 4060 Ti
+2026-01-03 03:55:40 | SDPA backends enabled: {"flash": "unknown", "mem_efficient": "unknown", "math": "unknown"}
+2026-01-03 03:55:43 | step    1/500 | lr 5.882e-06 | loss 11.1701 | tok/s 1580.7
+2026-01-03 03:56:13 | step   50/500 | lr 2.941e-04 | loss 8.7487 | tok/s 1637.0
+2026-01-03 03:56:38 | step  100/500 | lr 2.922e-04 | loss 6.2889 | tok/s 2081.0
+2026-01-03 03:56:59 | step  150/500 | lr 2.690e-04 | loss 6.0372 | tok/s 2465.8
+2026-01-03 03:57:12 | step  200/500 | lr 2.333e-04 | loss 6.4270 | tok/s 3723.6
+2026-01-03 03:57:25 | step  250/500 | lr 1.894e-04 | loss 6.2925 | tok/s 3945.3
+2026-01-03 03:57:42 | step  300/500 | lr 1.425e-04 | loss 5.9683 | tok/s 3087.2
+2026-01-03 03:58:01 | step  350/500 | lr 9.832e-05 | loss 5.7710 | tok/s 2717.5
+2026-01-03 03:58:16 | step  400/500 | lr 6.219e-05 | loss 6.1893 | tok/s 3263.9
+2026-01-03 03:58:31 | step  450/500 | lr 3.847e-05 | loss 6.2563 | tok/s 3504.0
+2026-01-03 03:58:46 | step  500/500 | lr 3.000e-05 | loss 5.9819 | tok/s 3485.4
+2026-01-03 03:58:46 | END variant=sdpa_with_tie_off

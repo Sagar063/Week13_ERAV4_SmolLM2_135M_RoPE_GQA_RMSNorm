@@ -13,3 +13,6 @@ tmp_sanity/
 .DS_Store
 .vscode/
 .idea/
+
+# Do not push huge profiler traces (GitHub limit 100MB)
+**/profiles/**/trace_*.json

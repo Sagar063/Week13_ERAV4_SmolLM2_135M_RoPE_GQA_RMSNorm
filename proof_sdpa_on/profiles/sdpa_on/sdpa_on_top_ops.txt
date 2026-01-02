@@ -1,0 +1,46 @@
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                                   Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg    # of Calls  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                            aten::copy_         3.78%      83.933ms        12.20%     270.809ms      10.392us     203.008ms        31.87%     203.008ms       7.790us         26060  
+                                           aten::linear         1.21%      26.927ms        21.68%     481.326ms      57.029us       0.000us         0.00%     201.291ms      23.850us          8440  
+                                               aten::mm         7.46%     165.524ms        12.03%     266.966ms      21.087us     191.958ms        30.13%     191.958ms      15.163us         12660  
+                                               aten::to         1.23%      27.404ms        17.18%     381.415ms      17.496us       0.000us         0.00%     171.775ms       7.880us         21800  
+                                         aten::_to_copy         3.58%      79.451ms        15.91%     353.302ms      17.184us       0.000us         0.00%     171.775ms       8.355us         20560  
+       autograd::engine::evaluate_function: MmBackward0         1.15%      25.584ms        12.49%     277.203ms      65.688us       0.000us         0.00%     128.199ms      30.379us          4220  
+                                            MmBackward0         1.50%      33.336ms        11.33%     251.619ms      59.625us       0.000us         0.00%     128.199ms      30.379us          4220  
+_ZN2at6native29vectorized_elementwise_kernelILi8EZNS...         0.00%       0.000us         0.00%       0.000us       0.000us      91.015ms        14.29%      91.015ms       7.547us         12060  
+autograd::engine::evaluate_function: ToCopyBackward0...         1.65%      36.529ms        10.41%     231.147ms      27.322us       0.000us         0.00%      84.355ms       9.971us          8460  
+_ZN2at6native27unrolled_elementwise_kernelIZZZNS0_23...         0.00%       0.000us         0.00%       0.000us       0.000us      80.731ms        12.67%      80.731ms       9.543us          8460  
+                                        ToCopyBackward0         0.61%      13.517ms         7.91%     175.503ms      20.745us       0.000us         0.00%      80.412ms       9.505us          8460  
+                                             aten::add_         1.23%      27.304ms         3.45%      76.491ms       9.732us      64.723ms        10.16%      64.723ms       8.234us          7860  
+      autograd::engine::evaluate_function: MulBackward0         2.63%      58.463ms        14.90%     330.860ms      49.679us       0.000us         0.00%      64.134ms       9.630us          6660  
+                                           aten::matmul         0.87%      19.413ms         6.10%     135.492ms      32.107us       0.000us         0.00%      63.759ms      15.109us          4220  
+_ZN2at6native29vectorized_elementwise_kernelILi4ENS0...         0.00%       0.000us         0.00%       0.000us       0.000us      60.684ms         9.53%      60.684ms      11.114us          5460  
+                                              aten::mul         5.34%     118.538ms        11.28%     250.305ms      12.503us      59.296ms         9.31%      59.296ms       2.962us         20020  
+autograd::engine::evaluate_function: EmbeddingBackwa...         0.01%     147.800us         0.06%       1.247ms      62.335us       0.000us         0.00%      58.321ms       2.916ms            20  
+ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_3...         0.00%       0.000us         0.00%       0.000us       0.000us      53.432ms         8.39%      53.432ms      17.693us          3020  
+                                           MulBackward0         0.97%      21.594ms         6.91%     153.499ms      23.048us       0.000us         0.00%      39.031ms       5.860us          6660  
+ampere_bf16_s16816gemm_bf16_128x64_ldg8_f2f_stages_6...         0.00%       0.000us         0.00%       0.000us       0.000us      36.871ms         5.79%      36.871ms      15.363us          2400  
+    autograd::engine::evaluate_function: SliceBackward0         0.53%      11.779ms         5.18%     114.951ms      46.728us       0.000us         0.00%      35.527ms      14.442us          2460  
+                                         SliceBackward0         0.24%       5.383ms         4.10%      90.938ms      36.967us       0.000us         0.00%      33.769ms      13.727us          2460  
+                                   aten::slice_backward         0.57%      12.655ms         3.85%      85.555ms      34.779us       0.000us         0.00%      33.769ms      13.727us          2460  
+                                            aten::fill_         0.39%       8.722ms         1.50%      33.201ms      10.641us      25.684ms         4.03%      25.684ms       8.232us          3120  
+                                            aten::zero_         0.31%       6.880ms         1.79%      39.679ms      12.800us       0.000us         0.00%      25.668ms       8.280us          3100  
+ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_stages_3...         0.00%       0.000us         0.00%       0.000us       0.000us      25.418ms         3.99%      25.418ms      40.997us           620  
+_ZN2at6native29vectorized_elementwise_kernelILi4ENS0...         0.00%       0.000us         0.00%       0.000us       0.000us      20.901ms         3.28%      20.901ms       2.855us          7320  
+ampere_bf16_s16816gemm_bf16_128x128_ldg8_f2f_stages_...         0.00%       0.000us         0.00%       0.000us       0.000us      20.446ms         3.21%      20.446ms      17.039us          1200  
+                         Memcpy DtoD (Device -> Device)         0.00%       0.000us         0.00%       0.000us       0.000us      20.100ms         3.16%      20.100ms     335.002us            60  
+autograd::engine::evaluate_function: ScaledDotProduc...         0.27%       5.884ms         2.81%      62.342ms     103.903us       0.000us         0.00%      19.744ms      32.906us           600  
+            ScaledDotProductEfficientAttentionBackward0         0.15%       3.284ms         2.54%      56.457ms      94.096us       0.000us         0.00%      19.744ms      32.906us           600  
+aten::_scaled_dot_product_efficient_attention_backwa...         0.45%       9.927ms         2.40%      53.174ms      88.623us       0.000us         0.00%      19.744ms      32.906us           600  
+                    aten::_efficient_attention_backward         0.46%      10.116ms         1.50%      33.314ms      55.523us      18.983ms         2.98%      19.744ms      32.906us           600  
+                                            aten::zeros         0.35%       7.727ms         1.95%      43.327ms      17.470us       0.000us         0.00%      19.070ms       7.689us          2480  
+_Z52fmha_cutlassB_bf16_aligned_64x64_k64_seqaligned_...         0.00%       0.000us         0.00%       0.000us       0.000us      18.983ms         2.98%      18.983ms      31.639us           600  
+_ZN2at6native18elementwise_kernelILi128ELi2EZNS0_22g...         0.00%       0.000us         0.00%       0.000us       0.000us      18.272ms         2.87%      18.272ms       2.510us          7280  
+                     aten::scaled_dot_product_attention         0.26%       5.868ms         3.97%      88.024ms      73.353us       0.000us         0.00%      16.732ms      13.944us          1200  
+                               aten::cross_entropy_loss         0.00%      90.700us         0.07%       1.588ms      79.400us       0.000us         0.00%      15.725ms     786.230us            20  
+_ZN2at6native29vectorized_elementwise_kernelILi4ENS0...         0.00%       0.000us         0.00%       0.000us       0.000us      15.524ms         2.44%      15.524ms     258.738us            60  
+                                              aten::sum         1.28%      28.484ms         2.55%      56.583ms      15.545us      14.422ms         2.26%      14.422ms       3.962us          3640  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+Self CPU time total: 2.220s
+Self CUDA time total: 637.047ms

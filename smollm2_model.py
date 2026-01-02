@@ -24,13 +24,13 @@ Tokenization is *not* part of the neural network. This model expects `input_ids`
 A tokenizer (e.g., `AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM2-135M")`) converts raw text
 into token IDs. The model then learns embeddings internally via a trainable embedding matrix.
 
-Design choices (intentionally slightly different from the reference repo you shared)
------------------------------------------------------------------------------------
-- We use PyTorch's `scaled_dot_product_attention(is_causal=True)` for clarity and speed.
-- We keep masking logic minimal (is_causal=True) and deterministic.
-- We keep the implementation small and transparent for coursework evaluation.
-
-This file contains NO pretrained weights and NO downloads.
+Design choices
+--------------
+- This implementation supports two attention backends for coursework ablations:
+    (A) "sdpa": PyTorch `scaled_dot_product_attention(is_causal=True)` (may use FlashAttention kernels when available)
+    (B) "manual": explicit QK^T / softmax / V with a causal mask
+  The backend is selected via `cfg.attention_impl` if present, otherwise defaults to "sdpa".
+- This file contains NO pretrained weights and NO downloads.
 """
 
 from __future__ import annotations
@@ -144,6 +144,7 @@ class SmolLM2Attention(nn.Module):
     """
     def __init__(self, cfg: SmolLM2Config):
         super().__init__()
+        self.cfg = cfg
         self.hidden_size = cfg.hidden_size
         self.num_heads = cfg.num_attention_heads
         self.num_kv_heads = cfg.num_key_value_heads
@@ -180,8 +181,35 @@ class SmolLM2Attention(nn.Module):
             k = k.repeat_interleave(self.num_kv_groups, dim=1)  # (B, Hq, T, D)
             v = v.repeat_interleave(self.num_kv_groups, dim=1)
 
-        # Causal attention (no future tokens visible)
-        out = F.scaled_dot_product_attention(q, k, v, is_causal=True)  # (B, H, T, D)
+                # --- Attention backend switch (for ablation studies) ---
+        # Default is "sdpa" to match your original training behavior (train.py).
+        attn_impl = getattr(self.cfg, "attention_impl", "sdpa")
+        attn_impl = (attn_impl or "sdpa").lower()
+
+        if attn_impl == "sdpa":
+            out = F.scaled_dot_product_attention(
+                q, k, v,
+                attn_mask=None,
+                dropout_p=self.cfg.attention_dropout if (self.training and self.cfg.attention_dropout > 0) else 0.0,
+                is_causal=True,
+            )  # (B, H, T, D)
+
+        elif attn_impl == "manual":
+            d = q.size(-1)
+            scores = torch.matmul(q, k.transpose(-2, -1)) / (d ** 0.5)  # (B, H, T, T)
+
+            causal = torch.ones((seq_len, seq_len), device=device, dtype=torch.bool).tril()
+            scores = scores.masked_fill(~causal, float("-inf"))
+
+            attn = torch.softmax(scores, dim=-1)
+            if self.training and self.cfg.attention_dropout > 0:
+                attn = torch.dropout(attn, p=self.cfg.attention_dropout, train=True)
+
+            out = torch.matmul(attn, v)  # (B, H, T, D)
+
+        else:
+            raise ValueError(f"Unknown attention_impl: {attn_impl}. Use 'sdpa' or 'manual'.")
+
         out = out.transpose(1, 2).contiguous().view(bsz, seq_len, self.num_heads * self.head_dim)
         return self.o_proj(out)
 

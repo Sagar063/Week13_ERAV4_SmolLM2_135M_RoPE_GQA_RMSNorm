@@ -1,0 +1,19 @@
+2026-01-03 03:42:30 | ===============================================
+2026-01-03 03:42:30 | RUNNING VARIANT: sdpa_on | max_steps=140
+2026-01-03 03:42:30 | START variant=sdpa_on
+2026-01-03 03:42:30 | spec={"autocast": true, "compile": false, "attention_impl": "sdpa", "tie_word_embeddings": true}
+2026-01-03 03:42:30 | PyTorch=2.7.0+cu126
+2026-01-03 03:42:30 | CUDA=12.6 | GPU=NVIDIA GeForce RTX 4060 Ti
+2026-01-03 03:42:30 | SDPA backends enabled: {"flash": "unknown", "mem_efficient": "unknown", "math": "unknown"}
+2026-01-03 03:42:31 | PROFILER: capturing 20 steps -> proof_sdpa_on\profiles\sdpa_on\trace_sdpa_on.json
+2026-01-03 03:42:45 | PROFILER: export_chrome_trace OK
+2026-01-03 03:43:23 | PROFILER: wrote top ops -> proof_sdpa_on\profiles\sdpa_on\top_ops.txt
+2026-01-03 03:43:24 | step    1/140 | lr 5.882e-06 | loss 11.3191 | tok/s 2305.9
+2026-01-03 03:43:36 | step   20/140 | lr 1.176e-04 | loss 9.9512 | tok/s 1625.2
+2026-01-03 03:43:46 | step   40/140 | lr 2.353e-04 | loss 8.2426 | tok/s 1996.6
+2026-01-03 03:43:55 | step   60/140 | lr 2.934e-04 | loss 7.0366 | tok/s 2331.3
+2026-01-03 03:44:07 | step   80/140 | lr 2.365e-04 | loss 6.3971 | tok/s 1728.5
+2026-01-03 03:44:21 | step  100/140 | lr 1.462e-04 | loss 5.9292 | tok/s 1433.4
+2026-01-03 03:44:34 | step  120/140 | lr 6.468e-05 | loss 5.9826 | tok/s 1555.3
+2026-01-03 03:44:44 | step  140/140 | lr 3.008e-05 | loss 6.2839 | tok/s 2152.4
+2026-01-03 03:44:44 | END variant=sdpa_on
