@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Training outputs (your train.py writes here)
+# out/
+# runs/
+**/checkpoints/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

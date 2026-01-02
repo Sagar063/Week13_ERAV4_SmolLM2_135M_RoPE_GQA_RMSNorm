@@ -1,0 +1,20 @@
+# ----------------------------
+# PyTorch (CUDA 12.6 wheels)
+# ----------------------------
+--extra-index-url https://download.pytorch.org/whl/cu126
+torch==2.7.0
+torchvision==0.22.0
+torchaudio==2.7.0
+
+# ----------------------------
+# Transformers
+# ----------------------------
+transformers
+
+# ----------------------------
+# Utilities
+# ----------------------------
+numpy
+tqdm
+pandas
+matplotlib
