@@ -567,11 +567,7 @@ python update_readme.py
 After running, this section will contain the actual log:
 
 <!-- TRAIN_LOG_BEGIN --><details>
-  <summary>
-    <span style="background-color:#FFA500; color:black; padding:4px 8px; border-radius:6px; font-weight:bold;">
-      Click to expand: out_smollm2_scratch/train.log
-    </span>
-  </summary>
+  <summary><b><mark>Click to expand: out_smollm2_scratch/train.log</mark></b></summary>
 
 ```text
 Device: cuda | CUDA: True | bf16_supported: True
@@ -960,11 +956,7 @@ Loss further decreased from ~5.13 → ~4.69 during the resumed window, validatin
 The complete training log is embedded below for transparency and reproducibility:
 
 <!-- TRAIN_LOG_BEGIN --><details>
-  <summary>
-    <span style="background-color:#FFA500; color:black; padding:4px 8px; border-radius:6px; font-weight:bold;">
-      Click to expand: out_smollm2_scratch/train.log
-    </span>
-  </summary>
+  <summary><b><mark>Click to expand: out_smollm2_scratch/train.log</mark></b></summary>
 
 ```text
 Device: cuda | CUDA: True | bf16_supported: True
@@ -1308,11 +1300,7 @@ The profiling results show distinct CUDA operation patterns:
 Run `python update_readme.py` to auto-embed the top CUDA operations tables below:
 
 <!-- SDPA_ON_TOPS_BEGIN --><details>
-  <summary>
-    <span style="background-color:#FFA500; color:black; padding:4px 8px; border-radius:6px; font-weight:bold;">
-      Click to expand: sdpa_on top CUDA operations
-    </span>
-  </summary>
+  <summary><b><mark>Click to expand: sdpa_on top CUDA operations</mark></b></summary>
 
 ```text
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
@@ -1366,11 +1354,7 @@ Self CUDA time total: 637.047ms
 </details><!-- SDPA_ON_TOPS_END -->
 
 <!-- SDPA_OFF_TOPS_BEGIN --><details>
-  <summary>
-    <span style="background-color:#FFA500; color:black; padding:4px 8px; border-radius:6px; font-weight:bold;">
-      Click to expand: sdpa_off top CUDA operations
-    </span>
-  </summary>
+  <summary><b><mark>Click to expand: sdpa_off top CUDA operations</mark></b></summary>
 
 ```text
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
