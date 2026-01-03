@@ -870,7 +870,8 @@ python update_readme.py
 
 to auto-render it below as a Markdown table.
 
-<!-- ABLATION_TABLE_BEGIN -->| timestamp           | variant           |   steps |   seq_len |   batch_size |   grad_accum |   seed | device   | autocast   | amp_dtype   | compile   | attention_impl   | tie_word_embeddings   |    params |   warmup_ignored_steps |   avg_tok_s_steady |   peak_mem_bytes |
+<!-- ABLATION_TABLE_BEGIN -->
+| timestamp           | variant           |   steps |   seq_len |   batch_size |   grad_accum |   seed | device   | autocast   | amp_dtype   | compile   | attention_impl   | tie_word_embeddings   |    params |   warmup_ignored_steps |   avg_tok_s_steady |   peak_mem_bytes |
 |:--------------------|:------------------|--------:|----------:|-------------:|-------------:|-------:|:---------|:-----------|:------------|:----------|:-----------------|:----------------------|----------:|-----------------------:|-------------------:|-----------------:|
 | 2026-01-03 03:30:24 | baseline          |     500 |       256 |            1 |            4 |   1337 | cuda     | False      | fp32        | False     | manual           | True                  | 134515008 |                     50 |            2474.8  |       2910449152 |
 | 2026-01-03 03:36:02 | autocast          |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | manual           | True                  | 134515008 |                     50 |            1536.09 |       3024941568 |
