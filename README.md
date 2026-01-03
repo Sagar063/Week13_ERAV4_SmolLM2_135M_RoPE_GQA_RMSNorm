@@ -26,6 +26,18 @@ The objective of this assignment is to:
 
 ## 2. Reference Model (Base, NOT Instruct)
 
+SmolLM2 is a family of compact, efficient language models developed by Hugging Face. The **SmolLM2-135M (base)** variant is a 135 million parameter decoder-only transformer model designed to deliver competitive performance while maintaining computational efficiency. Despite its relatively small size, it incorporates modern architectural innovations including:
+
+- **Grouped Query Attention (GQA)**: Reduces memory and computation by sharing key-value heads across multiple query heads (9 query heads share 3 key-value heads)
+- **Rotary Positional Embeddings (RoPE)**: Provides relative positional information without adding parameters
+- **RMSNorm**: A simpler and more efficient normalization layer compared to LayerNorm
+- **SwiGLU Activation**: An improved gated activation function for the MLP layers
+- **Weight Tying**: Input embeddings and output projection share weights, reducing parameters
+
+The model follows the LLaMA architecture family and is optimized for both training and inference efficiency, making it suitable for resource-constrained environments while maintaining strong language modeling capabilities.
+
+**Reference Repository:**
+
 All architectural details are reverse engineered from the **base model** repository:
 
 https://huggingface.co/HuggingFaceTB/SmolLM2-135M/tree/main
@@ -36,6 +48,64 @@ Specifically, the following public file is used:
 
 No instruct model files are used.
 
+**Model Architecture Diagram:**
+
+The following diagram illustrates the architecture implemented in `smollm2_model.py`:
+d
+graph TD
+    A[Input Tokens<br/>input_ids: B×T] --> B[Embedding Layer<br/>vocab_size: 49152<br/>hidden_size: 576]
+    B --> C[Transformer Block 1]
+    C --> D[Transformer Block 2]
+    D --> E[...]
+    E --> F[Transformer Block 30]
+    F --> G[Final RMSNorm]
+    G --> H[LM Head<br/>Linear: 576 → 49152]
+    H --> I[Output Logits<br/>B×T×vocab_size]
+    
+    subgraph "Transformer Block (x30)"
+        J[Input] --> K[RMSNorm]
+        K --> L[Self-Attention]
+        J --> M[Residual Add]
+        L --> M
+        M --> N[RMSNorm]
+        N --> O[MLP]
+        M --> P[Residual Add]
+        O --> P
+        P --> Q[Output]
+    end
+    
+    subgraph "Self-Attention (GQA)"
+        R[Input: B×T×576] --> S[Q Proj: 9 heads]
+        R --> T[K Proj: 3 heads]
+        R --> U[V Proj: 3 heads]
+        S --> V[RoPE<br/>theta=100000]
+        T --> V
+        V --> W[Attention<br/>Q: 9 heads, KV: 3 heads<br/>repeated to 9]
+        U --> W
+        W --> X[O Proj]
+        X --> Y[Output: B×T×576]
+    end
+    
+    subgraph "MLP (SwiGLU)"
+        Z[Input: B×T×576] --> AA[Gate Proj: 1536]
+        Z --> AB[Up Proj: 1536]
+        AA --> AC[SiLU Activation]
+        AC --> AD[Element-wise Multiply]
+        AB --> AD
+        AD --> AE[Down Proj: 576]
+        AE --> AF[Output: B×T×576]
+    end**Architecture Summary:**
+
+- **Total Parameters**: ~135M
+- **Layers**: 30 transformer blocks
+- **Hidden Dimension**: 576
+- **Attention**: 9 query heads, 3 key-value heads (GQA ratio: 3:1)
+- **MLP**: SwiGLU with intermediate size 1536 (2.67× hidden size)
+- **Context Length**: 8192 tokens
+- **Vocabulary**: 49152 tokens
+- **Positional Encoding**: RoPE with θ = 100,000
+- **Normalization**: RMSNorm (ε = 1e-5)
+- **Weight Tying**: Input embeddings tied to output projection
 ---
 
 ## 3. What Was Reverse Engineered
