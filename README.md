@@ -389,6 +389,23 @@ python -m venv .venv
 
 ### 3. Activate Virtual Environment
 
+Activate the virtual environment (### 6.1. Clone the Repository
+
+```bash
+git clone https://github.com/Sagar063/Week13_ERAV4_SmolLM2_135M_RoPE_GQA_RMSNorm.git
+cd Week13_ERAV4_SmolLM2_135M_RoPE_GQA_RMSNorm
+```
+
+### 6.2. Create Virtual Environment
+
+Create a virtual environment to isolate dependencies:
+
+```powershell
+python -m venv .venv
+```
+
+### 6.3. Activate Virtual Environment
+
 Activate the virtual environment (Windows PowerShell):
 
 ```powershell
@@ -400,7 +417,7 @@ Activate the virtual environment (Windows PowerShell):
 source .venv/bin/activate
 ```
 
-### 4. Install Dependencies
+### 6.4. Install Dependencies
 
 Install all required packages from `requirements.txt`:
 
@@ -415,7 +432,7 @@ This will install:
 
 **Note:** The requirements.txt includes PyTorch with CUDA 12.6 wheels. If you need a different CUDA version, modify the `--extra-index-url` in `requirements.txt`.
 
-### 5. Run Sanity Check (Optional but Recommended)
+### 6.5. Run Sanity Check (Optional but Recommended)
 
 Before training, verify that your setup is correct:
 
@@ -431,11 +448,11 @@ This verifies:
 
 For detailed information about sanity checks, see **Chapter 3 - Sanity Checks & Architecture Verification**.
 
-### 6. Prepare Training Data
+### 6.6. Prepare Training Data
 
 Ensure you have a training data file (`input.txt`) in the repository root. This file should contain the text corpus you want to train on.
 
-### 7. Training the Model
+### 6.7. Training the Model
 
 The training process is divided into two steps to demonstrate checkpoint resumption:
 
@@ -463,7 +480,7 @@ This will:
 - Save a checkpoint at step 5000: `checkpoint_step_5000.pt`
 - Generate training logs in `out_smollm2_scratch/train.log`
 
-#### Step B — Resume from Step 5000 and Continue to 5050
+#### Step 6.B — Resume from Step 5000 and Continue to 5050
 
 Resume training from the checkpoint at step 5000:
 
@@ -479,7 +496,7 @@ python train.py --input_file input.txt --seq_len 256 --batch_size 1 --grad_accum
 - Step 5000 is **not recomputed**; it's the checkpoint boundary
 - Training continues until step 5050 (50 additional steps)
 
-### 8. Training Outputs
+### 6.9. Training Outputs
 
 During training, the following outputs are generated:
 
@@ -489,7 +506,7 @@ During training, the following outputs are generated:
 - **Training Log**: `out_smollm2_scratch/train.log` - Contains all training metrics and progress
 - **Console Output**: Real-time training metrics printed to console
 
-### 9. Additional Training Options
+### 6.10. Additional Training Options
 
 You can customize training with additional arguments:
 
@@ -861,7 +878,8 @@ to auto-render it below as a Markdown table.
 | 2026-01-03 03:47:48 | sdpa_on           |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | sdpa             | True                  | 134515008 |                     50 |            2644.35 |       2884659712 |
 | 2026-01-03 03:51:56 | sdpa_off          |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | manual           | True                  | 134515008 |                     50 |            2189.29 |       3024941568 |
 | 2026-01-03 03:55:40 | sdpa_with_tie_on  |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | sdpa             | True                  | 134515008 |                     50 |            2211.59 |       2884659712 |
-| 2026-01-03 03:58:46 | sdpa_with_tie_off |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | sdpa             | False                 | 162826560 |                     50 |            3023.95 |       3337645056 |<!-- ABLATION_TABLE_END -->
+| 2026-01-03 03:58:46 | sdpa_with_tie_off |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | sdpa             | False                 | 162826560 |                     50 |            3023.95 |       3337645056 |
+<!-- ABLATION_TABLE_END -->
 
 ---
 
@@ -920,14 +938,261 @@ Loss further decreased from ~5.13 → ~4.69 during the resumed window, validatin
 
 The complete training log is embedded below for transparency and reproducibility:
 
-<!-- TRAIN_LOG_BEGIN -->
-<details>
+<!-- TRAIN_LOG_BEGIN --><details>
   <summary><b>Click to expand: out_smollm2_scratch/train.log</b></summary>
 
-  _Run `python update_readme.py` to auto-insert the latest training log here._
+```text
+Device: cuda | CUDA: True | bf16_supported: True
+Args: {
+  "input_file": "input.txt",
+  "out_dir": "out_smollm2_scratch",
+  "tokenizer_id": "HuggingFaceTB/SmolLM2-135M",
+  "seq_len": 256,
+  "batch_size": 1,
+  "grad_accum": 4,
+  "max_steps": 5000,
+  "warmup_steps": 200,
+  "max_lr": 0.0003,
+  "min_lr": 3e-05,
+  "weight_decay": 0.1,
+  "log_every": 50,
+  "sample_every": 500,
+  "save_every": 250,
+  "seed": 1337,
+  "resume": 0
+}
+Model params: 134,515,008
+Starting from scratch (random init).
+step     1/5000 | lr 1.493e-06 | loss 11.3191 | tok/s 1965.8
+[sample @ step 1] JULIET: GPUsotle cardiovascular Identseven Rover Korea witch privately Structuralliterals wr Thou resumed sovere lif measures seamDesign stained deterFORM supplements heraldstre bugs Paulo
+              mixer refuses demo Lin fractureiche joy fumartment spiritual detcussionsiterator remembered ChristmasPrimaryifice Protection VS PunjphisSimilar
+step    50/5000 | lr 7.463e-05 | loss 9.8108 | tok/s 3585.9
+step   100/5000 | lr 1.493e-04 | loss 7.2473 | tok/s 4007.2
+step   150/5000 | lr 2.239e-04 | loss 6.1569 | tok/s 3893.6
+step   200/5000 | lr 2.985e-04 | loss 6.4553 | tok/s 2149.3
+CHECKPOINT: saved checkpoint_step_250.pt and checkpoint_latest.pt
+step   250/5000 | lr 2.999e-04 | loss 6.2811 | tok/s 1320.9
+step   300/5000 | lr 2.997e-04 | loss 5.9350 | tok/s 1613.6
+step   350/5000 | lr 2.994e-04 | loss 5.7188 | tok/s 1611.8
+step   400/5000 | lr 2.989e-04 | loss 6.1429 | tok/s 1614.9
+step   450/5000 | lr 2.982e-04 | loss 6.1616 | tok/s 1612.2
+CHECKPOINT: saved checkpoint_step_500.pt and checkpoint_latest.pt
+step   500/5000 | lr 2.974e-04 | loss 5.8594 | tok/s 1333.4
+[sample @ step 500] JULIET:In I,To Richard in
+ in: I's and your:; you;GoAnd
+ that and will me in;,, it the.
+K RARD:Go with your, me with?Thater
+K R me;
+step   550/5000 | lr 2.965e-04 | loss 5.9419 | tok/s 1614.0
+step   600/5000 | lr 2.954e-04 | loss 5.9129 | tok/s 1610.8
+step   650/5000 | lr 2.942e-04 | loss 5.7384 | tok/s 1613.0
+step   700/5000 | lr 2.929e-04 | loss 5.8898 | tok/s 1616.8
+CHECKPOINT: saved checkpoint_step_750.pt and checkpoint_latest.pt
+step   750/5000 | lr 2.914e-04 | loss 5.8381 | tok/s 1302.2
+step   800/5000 | lr 2.898e-04 | loss 5.5630 | tok/s 1605.8
+step   850/5000 | lr 2.880e-04 | loss 5.6657 | tok/s 1602.4
+step   900/5000 | lr 2.861e-04 | loss 6.0411 | tok/s 1605.4
+step   950/5000 | lr 2.841e-04 | loss 6.1849 | tok/s 1608.2
+CHECKPOINT: saved checkpoint_step_1000.pt and checkpoint_latest.pt
+step  1000/5000 | lr 2.820e-04 | loss 5.8401 | tok/s 1317.0
+[sample @ step 1000] JULIET:I she!
+LE was,and.She that
+ youn
+ULman
+PAINA
+UL:I
+, so by in.
+ULINA
+PAINA
+PAINA me
+ that be man, will the is?
 
-</details>
-<!-- TRAIN_LOG_END -->
+step  1050/5000 | lr 2.797e-04 | loss 6.0145 | tok/s 1603.3
+step  1100/5000 | lr 2.773e-04 | loss 5.5962 | tok/s 1618.7
+step  1150/5000 | lr 2.748e-04 | loss 5.4115 | tok/s 1617.1
+step  1200/5000 | lr 2.722e-04 | loss 6.0264 | tok/s 1609.5
+CHECKPOINT: saved checkpoint_step_1250.pt and checkpoint_latest.pt
+step  1250/5000 | lr 2.694e-04 | loss 5.5240 | tok/s 1334.9
+step  1300/5000 | lr 2.666e-04 | loss 5.4123 | tok/s 1599.3
+step  1350/5000 | lr 2.636e-04 | loss 6.0961 | tok/s 1615.7
+step  1400/5000 | lr 2.605e-04 | loss 5.8053 | tok/s 1884.2
+step  1450/5000 | lr 2.573e-04 | loss 5.1927 | tok/s 3945.2
+CHECKPOINT: saved checkpoint_step_1500.pt and checkpoint_latest.pt
+step  1500/5000 | lr 2.541e-04 | loss 5.4244 | tok/s 1919.4
+[sample @ step 1500] JULIET:Youis he
+'s against noble.
+AU the was? you we; they!'ll,,Who?
+Second what my,?, a! weis,We not
+an'd you not for: he were, prayThe
+
+step  1550/5000 | lr 2.507e-04 | loss 5.6012 | tok/s 3065.1
+step  1600/5000 | lr 2.473e-04 | loss 5.4241 | tok/s 3262.6
+step  1650/5000 | lr 2.437e-04 | loss 5.2177 | tok/s 3291.5
+step  1700/5000 | lr 2.401e-04 | loss 5.2414 | tok/s 2657.0
+CHECKPOINT: saved checkpoint_step_1750.pt and checkpoint_latest.pt
+step  1750/5000 | lr 2.364e-04 | loss 5.5988 | tok/s 2911.8
+step  1800/5000 | lr 2.326e-04 | loss 5.5454 | tok/s 2377.7
+step  1850/5000 | lr 2.287e-04 | loss 5.1662 | tok/s 2562.8
+step  1900/5000 | lr 2.248e-04 | loss 5.6124 | tok/s 3386.0
+step  1950/5000 | lr 2.208e-04 | loss 5.4320 | tok/s 3121.6
+CHECKPOINT: saved checkpoint_step_2000.pt and checkpoint_latest.pt
+step  2000/5000 | lr 2.167e-04 | loss 5.2964 | tok/s 1718.1
+[sample @ step 2000] JULIET:And my!The's, is,!Let is you not
+ you my shall me for grave: you that in.
+N, be time here be this my,!
+ ism,!,'s,! do bem?Go
+step  2050/5000 | lr 2.126e-04 | loss 5.4172 | tok/s 3929.0
+step  2100/5000 | lr 2.085e-04 | loss 5.2516 | tok/s 2108.8
+step  2150/5000 | lr 2.043e-04 | loss 5.1151 | tok/s 1638.1
+step  2200/5000 | lr 2.000e-04 | loss 5.5344 | tok/s 1634.0
+CHECKPOINT: saved checkpoint_step_2250.pt and checkpoint_latest.pt
+step  2250/5000 | lr 1.957e-04 | loss 5.6429 | tok/s 1308.5
+step  2300/5000 | lr 1.914e-04 | loss 5.5378 | tok/s 1617.7
+step  2350/5000 | lr 1.871e-04 | loss 5.6260 | tok/s 1648.8
+step  2400/5000 | lr 1.827e-04 | loss 5.2099 | tok/s 1658.6
+step  2450/5000 | lr 1.783e-04 | loss 5.1761 | tok/s 1654.7
+CHECKPOINT: saved checkpoint_step_2500.pt and checkpoint_latest.pt
+step  2500/5000 | lr 1.739e-04 | loss 5.3256 | tok/s 1345.3
+[sample @ step 2500] JULIET:I you not not
+ to, more I some in life the that,Or
+ to.
+H thee we: me my, you not,So
+ he,,, that are, the of man
+ should your and as, you a
+step  2550/5000 | lr 1.695e-04 | loss 5.1390 | tok/s 1628.7
+step  2600/5000 | lr 1.651e-04 | loss 5.0439 | tok/s 1639.3
+step  2650/5000 | lr 1.607e-04 | loss 5.3776 | tok/s 1644.6
+step  2700/5000 | lr 1.563e-04 | loss 5.4990 | tok/s 1629.7
+CHECKPOINT: saved checkpoint_step_2750.pt and checkpoint_latest.pt
+step  2750/5000 | lr 1.519e-04 | loss 5.1954 | tok/s 1355.7
+step  2800/5000 | lr 1.475e-04 | loss 4.9932 | tok/s 1623.6
+step  2850/5000 | lr 1.431e-04 | loss 5.2565 | tok/s 1632.8
+step  2900/5000 | lr 1.387e-04 | loss 5.1456 | tok/s 1630.2
+step  2950/5000 | lr 1.344e-04 | loss 4.9377 | tok/s 1582.0
+CHECKPOINT: saved checkpoint_step_3000.pt and checkpoint_latest.pt
+step  3000/5000 | lr 1.301e-04 | loss 5.0194 | tok/s 1309.0
+[sample @ step 3000] JULIET:My grace and.My?
+K ale,, my,, say??
+QUE that is of, thy! thou, me me good,
+ shall haveed's not wife be, is toelf
+ of, I, you
+step  3050/5000 | lr 1.259e-04 | loss 5.0632 | tok/s 1645.4
+step  3100/5000 | lr 1.217e-04 | loss 5.2745 | tok/s 1632.3
+step  3150/5000 | lr 1.175e-04 | loss 5.2085 | tok/s 1611.5
+step  3200/5000 | lr 1.134e-04 | loss 5.0384 | tok/s 1615.7
+CHECKPOINT: saved checkpoint_step_3250.pt and checkpoint_latest.pt
+step  3250/5000 | lr 1.094e-04 | loss 5.1937 | tok/s 1329.6
+step  3300/5000 | lr 1.054e-04 | loss 5.1311 | tok/s 1592.6
+step  3350/5000 | lr 1.014e-04 | loss 5.1579 | tok/s 1606.6
+step  3400/5000 | lr 9.758e-05 | loss 5.0996 | tok/s 1626.9
+step  3450/5000 | lr 9.379e-05 | loss 4.9697 | tok/s 3460.4
+CHECKPOINT: saved checkpoint_step_3500.pt and checkpoint_latest.pt
+step  3500/5000 | lr 9.007e-05 | loss 4.8300 | tok/s 2746.1
+[sample @ step 3500] JULIET:'.
+QUE this, Warwick what my for we
+ the was to the at will his's; then she
+ose are by, me and this and, with world
+ou's from in- or the!, you me my.This
+step  3550/5000 | lr 8.644e-05 | loss 5.3914 | tok/s 3681.6
+step  3600/5000 | lr 8.289e-05 | loss 5.5124 | tok/s 1588.9
+step  3650/5000 | lr 7.943e-05 | loss 5.2546 | tok/s 1645.6
+step  3700/5000 | lr 7.605e-05 | loss 5.1959 | tok/s 1652.9
+CHECKPOINT: saved checkpoint_step_3750.pt and checkpoint_latest.pt
+step  3750/5000 | lr 7.278e-05 | loss 4.9411 | tok/s 1551.7
+step  3800/5000 | lr 6.960e-05 | loss 4.8294 | tok/s 1627.1
+step  3850/5000 | lr 6.653e-05 | loss 5.2063 | tok/s 1632.6
+step  3900/5000 | lr 6.356e-05 | loss 4.8096 | tok/s 1652.5
+step  3950/5000 | lr 6.070e-05 | loss 4.6110 | tok/s 1663.3
+CHECKPOINT: saved checkpoint_step_4000.pt and checkpoint_latest.pt
+step  4000/5000 | lr 5.795e-05 | loss 5.3324 | tok/s 892.6
+[sample @ step 4000] JULIET:Well, say
+ I us us to your: will me,.
+Second, I--
+ my to in, When
+ere and,, you in; we
+ I us with: have my
+SE people their a;I speak you
+step  4050/5000 | lr 5.532e-05 | loss 5.1883 | tok/s 1635.6
+step  4100/5000 | lr 5.280e-05 | loss 4.8185 | tok/s 1622.0
+step  4150/5000 | lr 5.040e-05 | loss 4.8386 | tok/s 1662.7
+step  4200/5000 | lr 4.813e-05 | loss 5.0520 | tok/s 1668.3
+CHECKPOINT: saved checkpoint_step_4250.pt and checkpoint_latest.pt
+step  4250/5000 | lr 4.598e-05 | loss 4.8834 | tok/s 1329.1
+step  4300/5000 | lr 4.396e-05 | loss 4.7590 | tok/s 1622.5
+step  4350/5000 | lr 4.207e-05 | loss 4.6431 | tok/s 1629.0
+step  4400/5000 | lr 4.031e-05 | loss 5.0751 | tok/s 1657.5
+step  4450/5000 | lr 3.868e-05 | loss 5.0856 | tok/s 1654.3
+CHECKPOINT: saved checkpoint_step_4500.pt and checkpoint_latest.pt
+step  4500/5000 | lr 3.719e-05 | loss 4.8302 | tok/s 1302.1
+[sample @ step 4500] JULIET:You do, fear is
+ you the they a of and in he: I not,'is.A
+ king I thee I be; is name the to,He, lord
+ I not for.
+D it more but to, me
+step  4550/5000 | lr 3.584e-05 | loss 5.0714 | tok/s 1660.1
+step  4600/5000 | lr 3.462e-05 | loss 4.9185 | tok/s 1643.9
+step  4650/5000 | lr 3.355e-05 | loss 4.8698 | tok/s 1649.9
+step  4700/5000 | lr 3.261e-05 | loss 4.9056 | tok/s 1639.0
+CHECKPOINT: saved checkpoint_step_4750.pt and checkpoint_latest.pt
+step  4750/5000 | lr 3.182e-05 | loss 5.0177 | tok/s 1329.0
+step  4800/5000 | lr 3.117e-05 | loss 4.6581 | tok/s 1618.0
+step  4850/5000 | lr 3.066e-05 | loss 4.9127 | tok/s 1635.3
+step  4900/5000 | lr 3.029e-05 | loss 5.1348 | tok/s 1627.4
+step  4950/5000 | lr 3.008e-05 | loss 5.2579 | tok/s 1618.8
+CHECKPOINT: saved checkpoint_step_5000.pt and checkpoint_latest.pt
+step  5000/5000 | lr 3.000e-05 | loss 5.1349 | tok/s 1897.3
+[sample @ step 5000] JULIET:A,He do
+, a's, will your.
+LE I and so it let
+ it the will., I it your
+ath to her, my, must will hear.
+Cn me you in, not to your
+
+TRAINING COMPLETE. Saved final_checkpoint.pt at step 5000.
+Device: cuda | CUDA: True | bf16_supported: True
+Args: {
+  "input_file": "input.txt",
+  "out_dir": "out_smollm2_scratch",
+  "tokenizer_id": "HuggingFaceTB/SmolLM2-135M",
+  "seq_len": 256,
+  "batch_size": 1,
+  "grad_accum": 4,
+  "max_steps": 5050,
+  "warmup_steps": 200,
+  "max_lr": 0.0003,
+  "min_lr": 3e-05,
+  "weight_decay": 0.1,
+  "log_every": 50,
+  "sample_every": 500,
+  "save_every": 250,
+  "seed": 1337,
+  "resume": 1
+}
+Model params: 134,515,008
+RESUME: loaded D:\ERA\week13\Week13_ERAV4_SmolLM2_135M_RoPE_GQA_RMSNorm\out_smollm2_scratch\checkpoints\checkpoint_latest.pt
+RESUME: starting from global_step=5000
+=== REACHED STEP 5000. Starting continuation phase: steps 5001..5050 ===
+step  5001/5050 | lr 3.007e-05 | loss 4.8538 | tok/s 36.2
+[sample @ step 5001] JULIET:C be,.
+PAINAEN manner
+Firstant for:tis to.,, good comes
+ but sister the of?
+POLENIZ:Ay
+ would
+ shall in?'ll you the of.
+She not
+ the that
+step  5050/5050 | lr 3.000e-05 | loss 4.6904 | tok/s 2621.7
+[sample @ step 5050] JULIET:
+ was you,'ll it not your.I thou gone
+ she'd to that my,'ll you the honour
+an my and. would me,'s, we so?
+D not
+ to it you the of; you find,If
+TRAINING COMPLETE. Saved final_checkpoint.pt at step 5050.
+```
+
+</details><!-- TRAIN_LOG_END -->
 
 This log includes:
 
@@ -1116,7 +1381,9 @@ Self CUDA time total: 686.348ms
 ```
 
 </details><!-- SDPA_OFF_TOPS_END -->
+
 ---
+
 ## 10. Hugging Face Upload (Placeholder)
 
 - Model repository: TBD
@@ -1125,6 +1392,7 @@ Self CUDA time total: 686.348ms
 (To be completed after training)
 
 ---
+
 ## 11. Repro Notes
 
 Hardware used:
@@ -1138,10 +1406,4 @@ Hardware used:
 
 `update_readme.py` auto-inserts:
 - `out_smollm2_scratch/train.log` into the collapsible block
-- `ablation_results_500steps_profiles/ablation_results.csv` as a Markdown table
-
-Run:
-
-```bash
-python update_readme.py
-```
+- `ablation_results_500steps/ablation_results.csv` as a Markdown table
