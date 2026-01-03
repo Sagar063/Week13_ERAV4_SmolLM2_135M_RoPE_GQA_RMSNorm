@@ -881,16 +881,6 @@ to auto-render it below as a Markdown table.
 | 2026-01-03 03:55:40 | sdpa_with_tie_on  |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | sdpa             | True                  | 134515008 |                     50 |            2211.59 |       2884659712 |
 | 2026-01-03 03:58:46 | sdpa_with_tie_off |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | sdpa             | False                 | 162826560 |                     50 |            3023.95 |       3337645056 |
 <!-- ABLATION_TABLE_END -->
-| timestamp           | variant           |   steps |   seq_len |   batch_size |   grad_accum |   seed | device   | autocast   | amp_dtype   | compile   | attention_impl   | tie_word_embeddings   |    params |   warmup_ignored_steps |   avg_tok_s_steady |   peak_mem_bytes |
-|:--------------------|:------------------|--------:|----------:|-------------:|-------------:|-------:|:---------|:-----------|:------------|:----------|:-----------------|:----------------------|----------:|-----------------------:|-------------------:|-----------------:|
-| 2026-01-03 03:30:24 | baseline          |     500 |       256 |            1 |            4 |   1337 | cuda     | False      | fp32        | False     | manual           | True                  | 134515008 |                     50 |            2474.8  |       2910449152 |
-| 2026-01-03 03:36:02 | autocast          |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | manual           | True                  | 134515008 |                     50 |            1536.09 |       3024941568 |
-| 2026-01-03 03:44:34 | autocast_comp     |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | True      | manual           | True                  | 134515008 |                     50 |            1096.49 |       3116244480 |
-| 2026-01-03 03:47:48 | sdpa_on           |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | sdpa             | True                  | 134515008 |                     50 |            2644.35 |       2884659712 |
-| 2026-01-03 03:51:56 | sdpa_off          |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | manual           | True                  | 134515008 |                     50 |            2189.29 |       3024941568 |
-| 2026-01-03 03:55:40 | sdpa_with_tie_on  |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | sdpa             | True                  | 134515008 |                     50 |            2211.59 |       2884659712 |
-| 2026-01-03 03:58:46 | sdpa_with_tie_off |     500 |       256 |            1 |            4 |   1337 | cuda     | True       | bf16        | False     | sdpa             | False                 | 162826560 |                     50 |            3023.95 |       3337645056 |
-<!-- ABLATION_TABLE_END -->
 
 ---
 
