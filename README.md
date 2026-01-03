@@ -511,6 +511,13 @@ During training, the following outputs are generated:
 - **Checkpoints**: Saved in `out_smollm2_scratch/checkpoints/`
   - `checkpoint_latest.pt`: Most recent checkpoint
   - `checkpoint_step_5000.pt`: Explicit checkpoint at step 5000
+- **Final checkpoint** : Saved in `out_smollm2_scratch/final_checkpoint.pt`
+  - This checkpoint is saved after completing the full training run (step 5050) and represents the final consolidated model state.
+  - This file serves as the deployment handoff artifact and is later used for:
+    - exporting the trained model to Hugging Face–compatible format (hf_export.py),
+    - uploading weights and configuration to a Hugging Face Model repository,
+    - deploying the model via a Hugging Face Space for inference.
+
 - **Training Log**: `out_smollm2_scratch/train.log` - Contains all training metrics and progress
 - **Console Output**: Real-time training metrics printed to console
 
@@ -1561,7 +1568,7 @@ from-scratch training → verified architecture → HF export → public inferen
 
 After exporting the model to Hugging Face format and uploading it to a Hugging Face Model repo, we deploy an inference UI using Hugging Face Spaces (Gradio) on the free CPU tier.
 
-11.1 Repositories Used
+### 11.1 Repositories Used
 
 Model repo (weights + tokenizer + config)
 Sunny063/ERAV4-Week13-SmolLLM2-135m
@@ -1570,21 +1577,18 @@ Space repo (Gradio UI code)
 https://huggingface.co/spaces/Sunny063/ERAV4-Week13-SmolLLM2-135m
 
 This separation is required because:
+  - the model repo stores large files (model.safetensors) via LFS
+  - the Space repo stores the application (app.py, requirements.txt) that loads the model
 
-the model repo stores large files (model.safetensors) via LFS
-
-the Space repo stores the application (app.py, requirements.txt) that loads the model
-
-11.2 Space Files
+### 11.2 Space Files
 
 The Space is implemented using 3 files:
+  - app.py (hf_space_files\app.py)
+  - requirements.txt  (hf_space_files\requirements.txt )
+  - README.md (hf_space_files\README.md)
 
-app.py (hf_space_files\app.py)
-requirements.txt  (hf_space_files\requirements.txt )
-README.md (hf_space_files\README.md)
 
-
-Key features:
+### 11.3 Key features:
 
 Prompt textbox + generation controls (max tokens, temperature, top-p, top-k)
 
@@ -1592,27 +1596,31 @@ Model + tokenizer caching (loaded once per container)
 
 CPU-safe defaults (float32 inference)
 
-11.3 Local Testing Before Deployment
+### 11.4 Local Testing Before Deployment
 
 The Gradio app was validated locally before uploading to Spaces.
 
 Run from repo root:
 
+**Command:**
+```bash
 $env:MODEL_ID = ".\hf_export"
 python .\hf_space_files\app.py
-
+```
 
 This loads the exported local model folder and confirms the UI + generation pipeline works end-to-end.
 
 After local test passes, you can also test loading from HF model repo:
 
+**Command:**
+```bash
 Remove-Item Env:MODEL_ID
 python .\hf_space_files\app.py
-
+```
 
 This forces it to use the default HF repo id (Sunny063/ERAV4-Week13-SmolLLM2-135m), and you can confirm the download-and-load path works too.
 
-11.4 Deployment
+### 11.5 Deployment
 
 Steps:
 
@@ -1624,11 +1632,11 @@ Space builds automatically and loads the model from the Model repo
 
 Note: CPU inference is slower than GPU; keep max_new_tokens around 64–128 for responsive output.
 
-11.5 Results
+### 11.6 Results
 
 The Hugging Face Space for SmolLM2-135M (ERA V4 Week13) was successfully deployed and validated on the Hugging Face free CPU tier.
 
-11.5.1 Live Inference Space
+#### 11.6.1 Live Inference Space
 
 The deployed Gradio-based inference Space is publicly accessible at:
 
@@ -1637,7 +1645,7 @@ https://huggingface.co/spaces/Sunny063/ERAV4-Week13-SmolLLM2-135m
 
 The Space loads the exported model directly from the Hugging Face Model Repository and provides an interactive interface for text generation with configurable decoding parameters.
 
-11.5.2 Deployment Screenshot
+#### 11.6.2 Deployment Screenshot
 
 The screenshot below shows the running Hugging Face Space, including:
 
@@ -1649,7 +1657,7 @@ successful autoregressive text generation output.
 
 ![SmolLM2-135M Hugging Face Space Deployment](images/HS_SmolLM2_135M_Deployment.png)
 
-11.5.3 Observations
+#### 11.6.3 Observations
 
 The Space correctly loads the exported model.safetensors and tokenizer artifacts from the Hugging Face Model repository.
 
@@ -1663,7 +1671,7 @@ stable causal decoding behavior for a model trained from scratch (~5k steps).
 
 Model caching ensures that weights are loaded only once per container lifecycle, improving responsiveness for subsequent generations.
 
-11.5.4 Significance
+#### 11.6.4 Significance
 
 This result demonstrates that:
 
