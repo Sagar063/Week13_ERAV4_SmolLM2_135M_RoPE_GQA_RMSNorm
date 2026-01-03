@@ -326,6 +326,8 @@ Week13_ERAV4_SmolLM2_135M_RoPE_GQA_RMSNorm/
 ├── README.md                  # This file
 ├── .gitignore                 # Git ignore rules
 ├── sanity_check.log           # Sanity check output log
+├── hf_export.py               # convert saved checkpoint to hugging space deployment type
+├── quick_infer_hf.py          # verify the conversion done by hf_export.py
 │
 ├── ablation_results_500steps/ # Ablation study results (500 steps)
 │   ├── ablations.csv
@@ -480,6 +482,9 @@ This will:
 - Save a checkpoint at step 5000: `checkpoint_step_5000.pt`
 - Generate training logs in `out_smollm2_scratch/train.log`
 
+Below screenshot confirms saving of checkpoint at 5000 step
+![SmolLM2-135M Checkpoint Save 5000th Step](images/Training_SaveChkPoint_5000Step.png)
+
 #### Step 6.B — Resume from Step 5000 and Continue to 5050
 
 Resume training from the checkpoint at step 5000:
@@ -495,6 +500,9 @@ python train.py --input_file input.txt --seq_len 256 --batch_size 1 --grad_accum
 - The training loop then increments and the **first new training step executed is 5001**
 - Step 5000 is **not recomputed**; it's the checkpoint boundary
 - Training continues until step 5050 (50 additional steps)
+
+Below screenshot confirms resume training from saved checkpoint of 5000 step
+![SmolLM2-135M Checkpoint Resume 5001th Step](images/Training_From_5001_Step.png)
 
 ### 6.9. Training Outputs
 
@@ -1394,7 +1402,7 @@ Self CUDA time total: 686.348ms
 ---
 
 
-## 10. Hugging Face
+## 10. Steps for model generation for Hugging space model repo
 
 After completing from-scratch training and verification, the next step is to make the trained model usable outside this repository, especially for inference and deployment on Hugging Face Spaces.
 
@@ -1549,7 +1557,127 @@ from-scratch training → verified architecture → HF export → public inferen
 
 ---
 
-## 11. Repro Notes
+## 11. Hugging Face Space (Gradio Inference UI)
+
+After exporting the model to Hugging Face format and uploading it to a Hugging Face Model repo, we deploy an inference UI using Hugging Face Spaces (Gradio) on the free CPU tier.
+
+11.1 Repositories Used
+
+Model repo (weights + tokenizer + config)
+Sunny063/ERAV4-Week13-SmolLLM2-135m
+
+Space repo (Gradio UI code)
+https://huggingface.co/spaces/Sunny063/ERAV4-Week13-SmolLLM2-135m
+
+This separation is required because:
+
+the model repo stores large files (model.safetensors) via LFS
+
+the Space repo stores the application (app.py, requirements.txt) that loads the model
+
+11.2 Space Files
+
+The Space is implemented using 3 files:
+
+app.py (hf_space_files\app.py)
+requirements.txt  (hf_space_files\requirements.txt )
+README.md (hf_space_files\README.md)
+
+
+Key features:
+
+Prompt textbox + generation controls (max tokens, temperature, top-p, top-k)
+
+Model + tokenizer caching (loaded once per container)
+
+CPU-safe defaults (float32 inference)
+
+11.3 Local Testing Before Deployment
+
+The Gradio app was validated locally before uploading to Spaces.
+
+Run from repo root:
+
+$env:MODEL_ID = ".\hf_export"
+python .\hf_space_files\app.py
+
+
+This loads the exported local model folder and confirms the UI + generation pipeline works end-to-end.
+
+After local test passes, you can also test loading from HF model repo:
+
+Remove-Item Env:MODEL_ID
+python .\hf_space_files\app.py
+
+
+This forces it to use the default HF repo id (Sunny063/ERAV4-Week13-SmolLLM2-135m), and you can confirm the download-and-load path works too.
+
+11.4 Deployment
+
+Steps:
+
+Create Space (Gradio, CPU free tier)
+
+Upload app.py, requirements.txt, README.md
+
+Space builds automatically and loads the model from the Model repo
+
+Note: CPU inference is slower than GPU; keep max_new_tokens around 64–128 for responsive output.
+
+11.5 Results
+
+The Hugging Face Space for SmolLM2-135M (ERA V4 Week13) was successfully deployed and validated on the Hugging Face free CPU tier.
+
+11.5.1 Live Inference Space
+
+The deployed Gradio-based inference Space is publicly accessible at:
+
+Hugging Face Space (Inference UI):
+https://huggingface.co/spaces/Sunny063/ERAV4-Week13-SmolLLM2-135m
+
+The Space loads the exported model directly from the Hugging Face Model Repository and provides an interactive interface for text generation with configurable decoding parameters.
+
+11.5.2 Deployment Screenshot
+
+The screenshot below shows the running Hugging Face Space, including:
+
+prompt input (BIANCA:),
+
+decoding controls (max new tokens, temperature, top-p, top-k),
+
+successful autoregressive text generation output.
+
+![SmolLM2-135M Hugging Face Space Deployment](images/HS_SmolLM2_135M_Deployment.png)
+
+11.5.3 Observations
+
+The Space correctly loads the exported model.safetensors and tokenizer artifacts from the Hugging Face Model repository.
+
+Inference runs fully on CPU, consistent with the constraints of the Hugging Face free tier.
+
+Generated text confirms:
+
+successful end-to-end training → export → deployment pipeline,
+
+stable causal decoding behavior for a model trained from scratch (~5k steps).
+
+Model caching ensures that weights are loaded only once per container lifecycle, improving responsiveness for subsequent generations.
+
+11.5.4 Significance
+
+This result demonstrates that:
+
+the custom SmolLM2-135M architecture (RoPE + GQA + RMSNorm) is fully compatible with the Hugging Face Transformers ecosystem,
+
+training checkpoints produced entirely from scratch can be reliably exported to Hugging Face format,
+
+the model can be served through a production-style Gradio interface without requiring any custom inference backend.
+
+This completes the training-to-deployment lifecycle for the ERA V4 Week13 assignment.
+
+---
+
+## 12. Repro Notes
 
 Hardware used:
 - RTX 4060 Ti (16GB VRAM)

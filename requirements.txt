@@ -19,3 +19,8 @@ tqdm
 pandas
 matplotlib
 tabulate
+safetensors
+tokenizers
+accelerate
+gradio>=4.0.0
+huggingface_hub
