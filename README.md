@@ -51,50 +51,63 @@ No instruct model files are used.
 **Model Architecture Diagram:**
 
 The following diagram illustrates the architecture implemented in `smollm2_model.py`:
-d
+
+```mermaid
 graph TD
-    A[Input Tokens<br/>input_ids: B×T] --> B[Embedding Layer<br/>vocab_size: 49152<br/>hidden_size: 576]
-    B --> C[Transformer Block 1]
-    C --> D[Transformer Block 2]
-    D --> E[...]
-    E --> F[Transformer Block 30]
-    F --> G[Final RMSNorm]
-    G --> H[LM Head<br/>Linear: 576 → 49152]
-    H --> I[Output Logits<br/>B×T×vocab_size]
-    
-    subgraph "Transformer Block (x30)"
-        J[Input] --> K[RMSNorm]
-        K --> L[Self-Attention]
-        J --> M[Residual Add]
-        L --> M
-        M --> N[RMSNorm]
-        N --> O[MLP]
-        M --> P[Residual Add]
-        O --> P
-        P --> Q[Output]
-    end
-    
-    subgraph "Self-Attention (GQA)"
-        R[Input: B×T×576] --> S[Q Proj: 9 heads]
-        R --> T[K Proj: 3 heads]
-        R --> U[V Proj: 3 heads]
-        S --> V[RoPE<br/>theta=100000]
-        T --> V
-        V --> W[Attention<br/>Q: 9 heads, KV: 3 heads<br/>repeated to 9]
-        U --> W
-        W --> X[O Proj]
-        X --> Y[Output: B×T×576]
-    end
-    
-    subgraph "MLP (SwiGLU)"
-        Z[Input: B×T×576] --> AA[Gate Proj: 1536]
-        Z --> AB[Up Proj: 1536]
-        AA --> AC[SiLU Activation]
-        AC --> AD[Element-wise Multiply]
-        AB --> AD
-        AD --> AE[Down Proj: 576]
-        AE --> AF[Output: B×T×576]
-    end**Architecture Summary:**
+    A["Input Tokens<br/>input_ids: B×T"] --> B["Embedding Layer<br/>vocab_size: 49152<br/>hidden_size: 576"]
+    B --> C["Transformer Block 1"]
+    C --> D["Transformer Block 2"]
+    D --> E["..."]
+    E --> F["Transformer Block 30"]
+    F --> G["Final RMSNorm"]
+    G --> H["LM Head<br/>Linear: 576 → 49152"]
+    H --> I["Output Logits<br/>B×T×vocab_size"]
+```
+
+**Transformer Block Structure (repeated 30 times):**
+
+```mermaid
+graph LR
+    J["Input"] --> K["RMSNorm"]
+    K --> L["Self-Attention"]
+    J -->|Residual| M["Add"]
+    L --> M
+    M --> N["RMSNorm"]
+    N --> O["MLP<br/>SwiGLU"]
+    M -->|Residual| P["Add"]
+    O --> P
+    P --> Q["Output"]
+```
+
+**Self-Attention (GQA) Details:**
+
+```mermaid
+graph TD
+    R["Input<br/>B×T×576"] --> S["Q Proj<br/>9 heads"]
+    R --> T["K Proj<br/>3 heads"]
+    R --> U["V Proj<br/>3 heads"]
+    S --> V["RoPE<br/>θ=100000"]
+    T --> V
+    V --> W["Attention<br/>Q: 9, KV: 3<br/>repeated to 9"]
+    U --> W
+    W --> X["O Proj"]
+    X --> Y["Output<br/>B×T×576"]
+```
+
+**MLP (SwiGLU) Details:**
+
+```mermaid
+graph TD
+    Z["Input<br/>B×T×576"] --> AA["Gate Proj<br/>1536"]
+    Z --> AB["Up Proj<br/>1536"]
+    AA --> AC["SiLU"]
+    AC --> AD["Multiply"]
+    AB --> AD
+    AD --> AE["Down Proj<br/>576"]
+    AE --> AF["Output<br/>B×T×576"]
+```
+
+**Architecture Summary:**
 
 - **Total Parameters**: ~135M
 - **Layers**: 30 transformer blocks
