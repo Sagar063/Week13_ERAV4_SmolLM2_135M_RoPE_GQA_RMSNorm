@@ -1685,9 +1685,8 @@ This completes the training-to-deployment lifecycle for the ERA V4 Week13 assign
 
 ---
 
-## 12. Repro Notes
+## 12. Hardware used:
 
-Hardware used:
 - RTX 4060 Ti (16GB VRAM)
 - Intel i7-13700K
 - 32GB RAM
