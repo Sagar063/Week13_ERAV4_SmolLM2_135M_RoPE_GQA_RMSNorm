@@ -123,19 +123,53 @@ graph TD
 
 ## 3. What Was Reverse Engineered
 
+
+**LLaMA (Large Language Model Meta AI)** architecture is a modern decoder-only transformer design that incorporates several improvements over earlier GPT-style models. While both are decoder-only transformers for autoregressive language modeling, LLaMA introduces key innovations:
+
+**Key Architectural Differences from GPT-style Transformers:**
+
+1. **Rotary Position Embedding (RoPE)**: Instead of learned positional embeddings, LLaMA uses RoPE which encodes relative positions by rotating query and key vectors. This enables better generalization to longer sequences than seen during training.
+
+2. **RMSNorm**: Replaces LayerNorm with Root Mean Square Normalization, which is simpler (no mean subtraction) and computationally more efficient.
+
+3. **SwiGLU Activation**: Uses Swish-Gated Linear Unit in the MLP layers instead of ReLU/GELU, providing better performance through a gated mechanism.
+
+4. **Grouped Query Attention (GQA)**: Reduces memory and computation by sharing key-value heads across multiple query heads (e.g., 9 query heads share 3 key-value heads), particularly beneficial for inference.
+
+5. **Pre-norm Architecture**: Normalization is applied before the attention/MLP operations rather than after, improving training stability for deep networks.
+
+6. **No Bias Terms**: Linear layers use `bias=False`, reducing parameters and improving efficiency.
+
+
+
+The **"Causal"** in `LlamaForCausalLM` refers to **causal language modeling** - an autoregressive task where the model predicts the next token given all previous tokens. Key characteristics:
+
+- **Autoregressive Generation**: The model generates text one token at a time, where each token can only attend to previous tokens (not future ones)
+- **Causal Masking**: Attention mechanism uses a lower triangular mask to prevent tokens from seeing future positions
+- **Next Token Prediction**: The model is trained to predict `P(token_t | token_1, token_2, ..., token_{t-1})`
+- **Unidirectional Context**: Information flows only from left to right (or past to future)
+
+This is different from:
+- **Bidirectional models** (like BERT): Can see both past and future tokens
+- **Encoder-decoder models** (like T5): Have separate encoder and decoder components
+
+Our implementation is an **autoregressive model** designed for **next token prediction**, making it suitable for text generation, completion, and conversational AI tasks.
+
+### Reverse-Engineered Components
+
 The following components were reconstructed directly from the Hugging Face `config.json`:
 
-- Decoder-only Transformer (`LlamaForCausalLM`)
-- Hidden size = 576
-- 30 Transformer layers
-- 9 attention heads
-- 3 key-value heads (Grouped Query Attention)
-- SwiGLU MLP (intermediate size = 1536)
-- RMSNorm
-- Rotary Positional Embedding (RoPE, theta = 100000)
-- Max context length = 8192
-- Vocabulary size = 49152
-- Tied input and output embeddings
+- **Decoder-only Transformer** (`LlamaForCausalLM`): LLaMA-style architecture for causal language modeling
+- **Hidden size** = 576
+- **30 Transformer layers**
+- **9 attention heads** (query heads)
+- **3 key-value heads** (Grouped Query Attention - shared across query heads)
+- **SwiGLU MLP** (intermediate size = 1536)
+- **RMSNorm** (normalization layer)
+- **Rotary Positional Embedding (RoPE)**, theta = 100000
+- **Max context length** = 8192 tokens
+- **Vocabulary size** = 49152 tokens
+- **Tied input and output embeddings** (weight sharing between embedding and output projection)
 
 ---
 
@@ -153,13 +187,49 @@ The following components were reconstructed directly from the Hugging Face `conf
 ```
 Week13_ERAV4_SmolLM2_135M_RoPE_GQA_RMSNorm/
 │
-├── smollm2_config.py
-├── smollm2_model.py
-├── train.py
-├── sanity_check.py
-├── requirements.txt
-├── README.md
-└── input.txt
+├── smollm2_config.py          # Model configuration (hyperparameters)
+├── smollm2_model.py           # Model architecture implementation
+├── train.py                   # Main training script
+├── train_ablation.py          # Ablation study training script
+├── sanity_check.py            # Model sanity check script
+├── requirements.txt           # Python dependencies
+├── input.txt                  # Training data
+├── README.md                  # This file
+├── .gitignore                 # Git ignore rules
+├── sanity_check.log           # Sanity check output log
+│
+├── ablation_results_500steps/ # Ablation study results (500 steps)
+│   ├── ablations.csv
+│   ├── ablations.jsonl
+│   └── logs/
+│       ├── autocast.log
+│       ├── autocast_comp.log
+│       ├── baseline.log
+│       ├── sdpa_off.log
+│       ├── sdpa_on.log
+│       ├── sdpa_with_tie_off.log
+│       └── sdpa_with_tie_on.log
+│
+├── out_smollm2_scratch/       # Main training outputs
+│   └── train.log             # Training log file
+│
+├── proof_sdpa_off/            # SDPA off ablation proof
+│   ├── ablations.csv
+│   ├── ablations.jsonl
+│   ├── logs/
+│   │   └── sdpa_off.log
+│   └── profiles/
+│       └── sdpa_off/
+│           └── sdpa_off_top_ops.txt
+│
+└── proof_sdpa_on/             # SDPA on ablation proof
+    ├── ablations.csv
+    ├── ablations.jsonl
+    ├── logs/
+    │   └── sdpa_on.log
+    └── profiles/
+        └── sdpa_on/
+            └── sdpa_on_top_ops.txt
 ```
 
 ---
