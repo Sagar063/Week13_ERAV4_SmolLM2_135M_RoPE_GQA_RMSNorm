@@ -1393,12 +1393,159 @@ Self CUDA time total: 686.348ms
 
 ---
 
-## 10. Hugging Face Upload (Placeholder)
 
-- Model repository: TBD
-- Hugging Face Space: TBD
+## 10. Hugging Face
 
-(To be completed after training)
+After completing from-scratch training and verification, the next step is to make the trained model usable outside this repository, especially for inference and deployment on Hugging Face Spaces.
+
+However, the raw training checkpoint (final_checkpoint.pt) produced by train.py cannot be used directly by Hugging Face tools.
+
+### 10.1 Why Export Is Required
+
+The training checkpoint saved by this project contains:
+
+- Raw PyTorch state_dict
+- Optimizer state
+- Scheduler state
+- Training metadata (step count, RNG state, etc.)
+
+This format is training-centric, not deployment-centric.
+
+In contrast, Hugging Face expects a standardized model repository layout, consisting of:
+
+- config.json (architecture definition)
+- model.safetensors or pytorch_model.bin (weights only)
+- Tokenizer files
+- Generation defaults
+
+Without this conversion:
+
+- AutoModelForCausalLM.from_pretrained(...) will not work
+- Hugging Face Spaces cannot load the model
+- The model cannot be shared or reused easily
+
+Therefore, an explicit export step is required.
+
+### 10.2 Export Script: hf_export.py
+
+To perform this conversion, we implement a dedicated export script:
+
+`hf_export.py`
+
+This script:
+
+- Loads the final training checkpoint (final_checkpoint.pt)
+- Reconstructs the exact same architecture using Hugging Face’s LlamaForCausalLM
+- Loads trained weights with strict key matching
+- Preserves weight tying (input embeddings ↔ LM head)
+- Saves the model in Hugging Face–compatible format
+- Copies tokenizer files from the reference tokenizer
+
+### 10.3 Export Command Used
+
+The following command was executed after training completed at step 5050:
+
+```powershell
+python hf_export.py ^
+  --ckpt_path "out_smollm2_scratch\final_checkpoint.pt" ^
+  --out_dir "hf_export" ^
+  --dtype bf16 ^
+  --tokenizer_id "HuggingFaceTB/SmolLM2-135M"
+```
+
+Arguments explained:
+
+- `--ckpt_path`  
+  Path to the final training checkpoint (trained from scratch)
+- `--out_dir`  
+  Output directory for Hugging Face–style model files
+- `--dtype bf16`  
+  Saves weights in bf16 for reduced size and faster inference
+- `--tokenizer_id`  
+  Tokenizer source (used only for text → token ID conversion)
+
+### 10.4 Exported Output Structure
+
+After running the export, the following directory was created:
+
+```
+hf_export/
+├── config.json
+├── model.safetensors
+├── tokenizer.json
+├── tokenizer_config.json
+├── special_tokens_map.json
+├── generation_config.json
+├── README.md
+```
+
+What each file is for:
+
+| File                  | Purpose                                                      |
+|-----------------------|--------------------------------------------------------------|
+| config.json           | Defines model architecture (layers, heads, RoPE, RMSNorm, etc.) |
+| model.safetensors     | Trained weights only (no optimizer, no scheduler)            |
+| tokenizer.json        | Tokenization rules                                           |
+| tokenizer_config.json | Tokenizer metadata                                           |
+| special_tokens_map.json | BOS/EOS/PAD token definitions                              |
+| generation_config.json | Default inference parameters                                |
+| README.md             | Model card stub                                              |
+
+This folder now behaves exactly like a standard Hugging Face model repository.
+
+### 10.5 Verifying the Export (Inference Sanity Check)
+
+To confirm that the exported model works correctly in Hugging Face format, a minimal inference script was executed:
+
+```powershell
+python quick_infer_hf.py
+```
+
+This script uses:
+
+- AutoModelForCausalLM.from_pretrained("hf_export")
+- AutoTokenizer.from_pretrained("hf_export")
+
+and performs autoregressive generation.
+
+Observed result:
+
+- Model loads successfully
+- Generation runs without errors
+- Output text is consistent with early-stage from-scratch training
+
+This confirms that:
+
+- Exported weights are correct
+- Architecture matches training model
+- Weight tying is preserved
+- HF compatibility is complete
+
+### 10.6 What This Step Does Not Do
+
+To avoid any ambiguity:
+
+❌ Does NOT use pretrained weights
+❌ Does NOT fine-tune or modify the model
+❌ Does NOT retrain anything
+
+This is a pure format conversion step, transforming a training checkpoint into a deployment-ready artifact.
+
+### 10.7 What Comes Next
+
+With a Hugging Face–compatible model folder now available, the next step is:
+
+- Deploying the model on Hugging Face Spaces
+
+This will involve:
+
+- Creating a Space (Gradio)
+- Loading the model from the exported HF repo
+- Providing a simple inference UI
+- Running on CPU (with optional GPU support)
+
+This completes the full lifecycle:
+from-scratch training → verified architecture → HF export → public inference UI
 
 ---
 

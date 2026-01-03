@@ -16,3 +16,8 @@ tmp_sanity/
 
 # Do not push huge profiler traces (GitHub limit 100MB)
 **/profiles/**/trace_*.json
+
+# Generated / large artifacts
+hf_export/
+*.pt
+*.safetensors
